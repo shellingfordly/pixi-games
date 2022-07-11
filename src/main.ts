@@ -1,4 +1,10 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import App from "./App.vue";
+import { setupRouter } from "./router";
+import "./styles/index.less";
 
-createApp(App).mount('#app')
+const app = createApp(App);
+
+setupRouter(app);
+
+app.mount("#app");
