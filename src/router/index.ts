@@ -11,6 +11,10 @@ const routes: RouteRecordRaw[] = [
     path: "/parkour",
     component: () => import("@/app/parkour/Main.vue"),
   },
+  {
+    path: "/snake",
+    component: () => import("@/app/snake/Main.vue"),
+  },
 ];
 
 const router = createRouter({
