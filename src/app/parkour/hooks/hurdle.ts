@@ -2,6 +2,7 @@ import { BODY_HEIGHT, BODY_WIDTH } from "@/utils/common";
 import { Loader, Rectangle, Texture, Ticker, Container, Sprite } from "pixi.js";
 import TrapImg from "@/assets/parkour/trap.png";
 import { hitTestRectangle } from "@/utils/hit";
+import { ref } from "vue";
 
 const TrapTexturePosition = [
   [30, 55, 130, 40],
