@@ -1,6 +1,8 @@
 # PIXI.JS Games
 
-这是一个使用 pixi.js 搭配 vue 开发的网页小游戏库
+这是一个使用 pixi.js 搭配 vue 开发的网页小游戏库，部分素材来自[爱给网](https://www.aigei.com/)，本项目仅作用于 pixi.js 学习，请勿用于商业用途，如有侵权立即删除。
+
+此项目将不定期更新网页小游戏
 
 ## Preview
 
