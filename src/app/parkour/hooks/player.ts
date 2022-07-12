@@ -29,6 +29,7 @@ export class Player extends Sprite {
   defaultY = BODY_WIDTH - 160;
   textures: Texture[] = [];
   status: "run" | "jump" | "slide" = "run";
+  ticker = new Ticker();
 
   constructor() {
     super();
@@ -41,7 +42,7 @@ export class Player extends Sprite {
     this.watchEvent();
   }
 
-  loader() {
+  private loader() {
     const loader = new Loader();
     loader.add("player", PlayerImg).load((_, resources) => {
       PlayerTexturePosition.forEach((position, i) => {
@@ -54,26 +55,17 @@ export class Player extends Sprite {
     });
   }
 
-  play() {
-    const ticker = new Ticker();
-    ticker.autoStart = true;
-    const runTicker = () => {
-      this.down();
-      this.entrance();
-      if (this.status === "run") this.run();
-      else if (this.status === "jump") this.jump();
-    };
-    ticker.add(runTicker);
+  private watchEvent() {
+    document.addEventListener("keydown", this.keydown);
+    document.addEventListener("keyup", this.keyup);
   }
 
-  watchEvent() {
-    const keydown = this.keydown;
-    const keyup = this.keyup;
-    document.addEventListener("keydown", keydown);
-    document.addEventListener("keyup", keyup);
+  private clearEvent() {
+    document.removeEventListener("keyup", this.keydown);
+    document.removeEventListener("keydown", this.keyup);
   }
 
-  keydown = (e: any) => {
+  private keydown = (e: any) => {
     if (e.code === "ArrowUp") {
       this.status = "jump";
       if (this.y === this.defaultY) {
@@ -88,9 +80,25 @@ export class Player extends Sprite {
     }
   };
 
-  keyup = () => {
+  private keyup = () => {
     this.status = "run";
   };
+
+  stop() {
+    this.ticker.stop();
+    this.clearEvent();
+  }
+
+  play() {
+    this.ticker.autoStart = true;
+    const runTicker = () => {
+      this.down();
+      this.entrance();
+      if (this.status === "run") this.run();
+      else if (this.status === "jump") this.jump();
+    };
+    this.ticker.add(runTicker);
+  }
 
   // 跑
   run() {
@@ -116,10 +124,5 @@ export class Player extends Sprite {
   // 入场
   entrance() {
     if (this.x < 120) this.x += 5;
-  }
-
-  clearEvent() {
-    // document.removeEventListener("keyup", this.jumpEvent);
-    // document.removeEventListener("keydown", this.slideEvent);
   }
 }

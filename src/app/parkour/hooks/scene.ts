@@ -47,5 +47,9 @@ export function useScene() {
     ticker.start();
   }
 
-  return { scene, runScene };
+  function stopScene() {
+    ticker.stop();
+  }
+
+  return { scene, runScene, stopScene };
 }

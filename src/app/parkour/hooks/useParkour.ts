@@ -12,6 +12,7 @@ export function useParkour() {
     height: BODY_WIDTH,
     backgroundColor: 0xffffff,
   });
+  const start = ref(false);
 
   Tweener.init(app.ticker);
 
@@ -19,20 +20,35 @@ export function useParkour() {
   app.stage.addChild(container);
 
   const player = new Player();
-  const { scene, runScene } = useScene();
-  const { trap, start, score, hp } = useHurdle();
+  const { scene, runScene, stopScene } = useScene();
+  const { trap, runHurdle, score, hp } = useHurdle();
   container.addChild(player);
   container.addChild(scene);
   container.addChild(trap);
   container.sortChildren();
 
-  player.play();
   runScene();
-  start(player);
+
+  function gameStart() {
+    start.value = true;
+    player.play();
+    const timer = setTimeout(() => {
+      runHurdle(player);
+      clearTimeout(timer);
+    }, 1000);
+  }
+
+  watch(hp, (value) => {
+    if (value === 0) {
+      player.stop();
+      stopScene();
+      start.value = false;
+    }
+  });
 
   onMounted(() => {
     if (containerRef.value) containerRef.value.appendChild(app.view);
   });
 
-  return { containerRef, app, score, hp };
+  return { containerRef, app, score, hp, gameStart, start };
 }

@@ -18,11 +18,12 @@ export function useHurdle() {
   let player: Sprite | null = null;
   const hp = ref(100);
   const score = ref(0);
+  let timer: NodeJS.Timer;
 
   trap.zIndex = 3;
 
   loader.add("trap", TrapImg).load((_, resources) => {
-    TrapTexturePosition.forEach((position, i) => {
+    TrapTexturePosition.forEach((position) => {
       const t = new Texture(
         resources.trap.texture as any,
         new Rectangle(...position)
@@ -32,7 +33,7 @@ export function useHurdle() {
   });
 
   loader.load(() => {
-    setInterval(() => {
+    timer = setInterval(() => {
       const index = Math.floor(Math.random() * 2) + 1;
       const item = new Sprite(textures[index]);
       item.width = 80;
@@ -42,14 +43,17 @@ export function useHurdle() {
       trap.addChild(item);
       let scoreFlag = true;
       let hpFlag = true;
+      let isHit = false;
 
       function itemTicker() {
         item.x -= 8;
 
-        if (player) {
-          if (hpFlag && hitTestRectangle(player, item)) {
+        if (player && !isHit) {
+          isHit = hitTestRectangle(player, item);
+          if (hpFlag && isHit) {
             hp.value -= 10;
             hpFlag = false;
+            if (hp.value === 0) stopGame();
           } else if (scoreFlag && item.x < player.x) {
             score.value++;
             scoreFlag = false;
@@ -66,10 +70,15 @@ export function useHurdle() {
     }, 2000);
   });
 
-  function start(target: Sprite) {
+  function runHurdle(target: Sprite) {
     player = target;
     ticker.start();
   }
 
-  return { trap, start, score, hp };
+  function stopGame() {
+    timer && clearInterval(timer);
+    ticker.stop();
+  }
+
+  return { trap, runHurdle, score, hp };
 }
